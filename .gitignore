@@ -11,3 +11,4 @@ wheels/
 env.fish
 
 game_state.jsonl
+game_events.jsonl
