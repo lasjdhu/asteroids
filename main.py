@@ -1,5 +1,10 @@
+from typing import cast
+
 import pygame
 
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from circleshape import CircleShape
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from logger import log_state
 from player import Player
@@ -10,19 +15,31 @@ def main():
     clock = pygame.time.Clock()
     dt = 0.0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = updatable
+
+    _player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    _asteroid_field = AsteroidField()
 
     while True:
         log_state()
         _ = screen.fill("black")
+        dt = clock.tick(60) / 1000
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
-        dt = clock.tick(60) / 1000
-        player.draw(screen)
-        player.update(dt)
+        updatable.update(dt)
+        for sprite in drawable:
+            drawable_sprite = cast(CircleShape, sprite)
+            drawable_sprite.draw(screen)
 
         pygame.display.flip()
 
