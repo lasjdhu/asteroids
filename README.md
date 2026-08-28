@@ -7,9 +7,6 @@ incoming asteroids, shoot them, and split larger rocks into smaller ones.
 
 ![Asteroids preview](assets/preview/preview.gif)
 
-The preview GIF is a placeholder for now. Replace `assets/preview/preview.gif`
-with a recorded gameplay clip when the visuals are ready to show.
-
 ## Features
 
 - Player-controlled ship with rotation, forward/reverse movement, and shooting.
