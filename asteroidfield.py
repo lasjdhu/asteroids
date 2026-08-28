@@ -1,7 +1,8 @@
-import random
 from collections.abc import Callable
 
 import pygame
+import random
+
 from asteroid import Asteroid
 from constants import *
 
