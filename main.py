@@ -13,6 +13,7 @@ from shot import Shot
 
 def main():
     _ = pygame.init()
+    pygame.display.set_caption("Asteroids")
     clock = pygame.time.Clock()
     dt = 0.0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

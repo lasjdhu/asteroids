@@ -5,10 +5,15 @@ build/
 dist/
 wheels/
 *.egg-info
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 
 # Virtual environments
 .venv
 env.fish
 
+# Game runtime logs
 game_state.jsonl
 game_events.jsonl
+
