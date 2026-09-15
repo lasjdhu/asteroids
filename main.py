@@ -9,14 +9,15 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from logger import log_event, log_state
 from player import Player
 from shot import Shot
+from background import Background
 
 
 def main():
     _ = pygame.init()
     pygame.display.set_caption("Asteroids")
     clock = pygame.time.Clock()
-    dt = 0.0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background = Background(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     updatable: pygame.sprite.Group[CircleShape] = pygame.sprite.Group()
     drawable: pygame.sprite.Group[CircleShape] = pygame.sprite.Group()
@@ -33,8 +34,10 @@ def main():
 
     while True:
         log_state()
-        _ = screen.fill("black")
         dt = clock.tick(60) / 1000
+
+        background.update(dt)
+        background.draw(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

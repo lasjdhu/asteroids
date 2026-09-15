@@ -13,6 +13,9 @@ wheels/
 .venv
 env.fish
 
+# Editor
+.idea
+
 # Game runtime logs
 game_state.jsonl
 game_events.jsonl

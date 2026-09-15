@@ -97,12 +97,10 @@ def log_state() -> None:
             game_state[key] = group_info
 
         if len(game_state) == 0 and hasattr(value, "position"):
-            sprite_info = {"type": value.__class__.__name__}
-
-            sprite_info["pos"] = [
+            sprite_info = {"type": value.__class__.__name__, "pos": [
                 round(value.position.x, 2),
                 round(value.position.y, 2),
-            ]
+            ]}
 
             if hasattr(value, "velocity"):
                 sprite_info["vel"] = [
