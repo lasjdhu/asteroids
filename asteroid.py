@@ -16,7 +16,8 @@ class Asteroid(CircleShape):
         super().__init__(x, y, radius)
         self.position: pygame.Vector2
         self.rotation: float = random.uniform(0, 360)
-        self.rotation_speed: float = random.uniform(-45, 45)
+        rotation_direction = random.choice((-1, 1))
+        self.rotation_speed: float = rotation_direction * random.uniform(40, 65)
 
         if len(Asteroid.images) == 0:
             Asteroid.images = [
@@ -31,8 +32,9 @@ class Asteroid(CircleShape):
 
     @override
     def draw(self, screen: pygame.Surface) -> None:
-        rotated_image = pygame.transform.rotozoom(self.image, self.rotation, 1.0)
-        rect = rotated_image.get_rect(center=self.position)
+        rotated_image = pygame.transform.rotate(self.image, self.rotation)
+        render_position = (round(self.position.x), round(self.position.y))
+        rect = rotated_image.get_rect(center=render_position)
         screen.blit(rotated_image, rect)
 
     @override

@@ -12,6 +12,8 @@ from constants import (
     PLAYER_SHOOT_SPEED,
     PLAYER_SPEED,
     PLAYER_TURN_SPEED,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
 )
 
 
@@ -70,11 +72,50 @@ class Player(CircleShape):
     def rotate(self, dt: float) -> None:
         self.rotation += PLAYER_TURN_SPEED * dt
 
+    def triangle(self) -> tuple[pygame.Vector2, pygame.Vector2, pygame.Vector2]:
+        forward = pygame.Vector2(0, -1).rotate(self.rotation)
+        right = forward.rotate(90)
+        return (
+            self.position + forward * self.radius,
+            self.position - forward * self.radius + right * self.radius,
+            self.position - forward * self.radius - right * self.radius,
+        )
+
+    @override
+    def collides_with(self, other: CircleShape) -> bool:
+        vertices = self.triangle()
+        center = other.position
+
+        edge_crosses = []
+        for start, end in zip(vertices, vertices[1:] + vertices[:1]):
+            edge_crosses.append((end - start).cross(center - start))
+        if all(cross >= 0 for cross in edge_crosses) or all(
+            cross <= 0 for cross in edge_crosses
+        ):
+            return True
+
+        radius_squared = other.radius * other.radius
+        for start, end in zip(vertices, vertices[1:] + vertices[:1]):
+            edge = end - start
+            distance_along_edge = (center - start).dot(edge) / edge.length_squared()
+            distance_along_edge = max(0.0, min(1.0, distance_along_edge))
+            closest_point = start + edge * distance_along_edge
+            if center.distance_squared_to(closest_point) <= radius_squared:
+                return True
+
+        return False
+
     def move(self, dt: float) -> None:
         unit_vector = pygame.Vector2(0, -1)
         rotated_vector = unit_vector.rotate(self.rotation)
         rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
         self.position += rotated_with_speed_vector
+        self.position.x = max(
+            self.radius, min(self.position.x, SCREEN_WIDTH - self.radius)
+        )
+        self.position.y = max(
+            self.radius, min(self.position.y, SCREEN_HEIGHT - self.radius)
+        )
 
     def shoot(self) -> None:
         if self.timer > 0:

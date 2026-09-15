@@ -34,7 +34,7 @@ def main():
 
     while True:
         log_state()
-        dt = clock.tick(60) / 1000
+        dt = clock.tick_busy_loop(60) / 1000
 
         background.update(dt)
         background.draw(screen)
@@ -45,7 +45,7 @@ def main():
 
         updatable.update(dt)
         for asteroid in asteroids:
-            if asteroid.collides_with(player):
+            if player.collides_with(asteroid):
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
