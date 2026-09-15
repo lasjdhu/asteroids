@@ -36,8 +36,8 @@ uv run python main.py
 
 Controls:
 
-- `W`: move forward
-- `S`: move backward
-- `A`: rotate left
-- `D`: rotate right
+- `Up Arrow`: move forward
+- `Down Arrow`: move backward
+- `Left Arrow`: rotate left
+- `Right Arrow`: rotate right
 - `Space`: shoot

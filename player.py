@@ -1,4 +1,3 @@
-import os
 from typing import override
 
 import pygame
@@ -8,12 +7,15 @@ from shot import Shot
 from constants import (
     PLAYER_RADIUS,
     PLAYER_SCALE,
+    PLAYER_ANIMATION_SPEED,
+    PLAYER_IMAGE_PATH,
     PLAYER_SHOOT_COOLDOWN_SECONDS,
     PLAYER_SHOOT_SPEED,
     PLAYER_SPEED,
     PLAYER_TURN_SPEED,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
+    SHOT_RADIUS,
 )
 
 
@@ -25,9 +27,10 @@ class Player(CircleShape):
         self.rotation: float = 0.0
         self.position: pygame.Vector2
         self.timer: float = 0.0
+        self.pressed_keys: set[int] = set()
 
         if len(Player.frames) == 0:
-            img = pygame.image.load(os.path.join("assets/images", "player.png")).convert_alpha()
+            img = pygame.image.load(PLAYER_IMAGE_PATH).convert_alpha()
             frame_width = img.get_width() // 4
             frame_height = img.get_height()
 
@@ -39,7 +42,7 @@ class Player(CircleShape):
 
         self.current_frame = 0
         self.animation_timer = 0.0
-        self.animation_speed = 0.1
+        self.animation_speed = PLAYER_ANIMATION_SPEED
 
     @override
     def draw(self, screen: pygame.Surface) -> None:
@@ -56,18 +59,24 @@ class Player(CircleShape):
             self.animation_timer = 0.0
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_w]:
+        if pygame.K_UP in self.pressed_keys:
             self.move(dt)
-        if keys[pygame.K_a]:
+        if pygame.K_LEFT in self.pressed_keys:
             self.rotate(-dt)
-        if keys[pygame.K_s]:
+        if pygame.K_DOWN in self.pressed_keys:
             self.move(-dt)
-        if keys[pygame.K_d]:
+        if pygame.K_RIGHT in self.pressed_keys:
             self.rotate(dt)
-        if keys[pygame.K_SPACE]:
+        if pygame.K_SPACE in self.pressed_keys:
             self.shoot()
+
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.KEYDOWN:
+            self.pressed_keys.add(event.key)
+        elif event.type == pygame.KEYUP:
+            self.pressed_keys.discard(event.key)
+        elif event.type == pygame.WINDOWFOCUSLOST:
+            self.pressed_keys.clear()
 
     def rotate(self, dt: float) -> None:
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -122,5 +131,7 @@ class Player(CircleShape):
             return
         else:
             self.timer = PLAYER_SHOOT_COOLDOWN_SECONDS
-        shot = Shot(self.position.x, self.position.y)
-        shot.velocity = pygame.Vector2(0, -1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        direction = pygame.Vector2(0, -1).rotate(self.rotation)
+        spawn_position = self.position + direction * (self.radius + SHOT_RADIUS)
+        shot = Shot(spawn_position.x, spawn_position.y)
+        shot.velocity = direction * PLAYER_SHOOT_SPEED

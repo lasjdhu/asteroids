@@ -1,11 +1,18 @@
-import os
 import random
 from typing import override
 
 import pygame
 
 from circleshape import CircleShape
-from constants import ASTEROID_MIN_RADIUS
+from constants import (
+    ASTEROID_IMAGE_PATHS,
+    ASTEROID_MAX_ROTATION_SPEED,
+    ASTEROID_MAX_SPLIT_ANGLE,
+    ASTEROID_MIN_RADIUS,
+    ASTEROID_MIN_ROTATION_SPEED,
+    ASTEROID_MIN_SPLIT_ANGLE,
+    ASTEROID_SPLIT_SPEED_MULTIPLIER,
+)
 from logger import log_event
 
 
@@ -17,13 +24,14 @@ class Asteroid(CircleShape):
         self.position: pygame.Vector2
         self.rotation: float = random.uniform(0, 360)
         rotation_direction = random.choice((-1, 1))
-        self.rotation_speed: float = rotation_direction * random.uniform(40, 65)
+        self.rotation_speed = rotation_direction * random.uniform(
+            ASTEROID_MIN_ROTATION_SPEED, ASTEROID_MAX_ROTATION_SPEED
+        )
 
         if len(Asteroid.images) == 0:
             Asteroid.images = [
-                pygame.image.load(os.path.join("assets/images", "asteroid1.png")).convert_alpha(),
-                pygame.image.load(os.path.join("assets/images", "asteroid2.png")).convert_alpha(),
-                pygame.image.load(os.path.join("assets/images", "asteroid3.png")).convert_alpha(),
+                pygame.image.load(path).convert_alpha()
+                for path in ASTEROID_IMAGE_PATHS
             ]
 
         original_image = random.choice(Asteroid.images)
@@ -48,11 +56,15 @@ class Asteroid(CircleShape):
             return
         log_event("asteroid_split")
 
-        angle = random.uniform(20, 50)
+        angle = random.uniform(ASTEROID_MIN_SPLIT_ANGLE, ASTEROID_MAX_SPLIT_ANGLE)
         new_r = self.radius - ASTEROID_MIN_RADIUS
 
         first_asteroid = Asteroid(self.position.x, self.position.y, new_r)
         second_asteroid = Asteroid(self.position.x, self.position.y, new_r)
 
-        first_asteroid.velocity = self.velocity.rotate(angle) * 1.2
-        second_asteroid.velocity = self.velocity.rotate(-angle) * 1.2
+        first_asteroid.velocity = (
+            self.velocity.rotate(angle) * ASTEROID_SPLIT_SPEED_MULTIPLIER
+        )
+        second_asteroid.velocity = (
+            self.velocity.rotate(-angle) * ASTEROID_SPLIT_SPEED_MULTIPLIER
+        )

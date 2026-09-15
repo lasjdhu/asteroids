@@ -1,10 +1,9 @@
-import os
 from typing import override
 
 import pygame
 
 from circleshape import CircleShape
-from constants import SHOT_RADIUS
+from constants import SHOT_IMAGE_PATH, SHOT_RADIUS
 
 
 class Shot(CircleShape):
@@ -15,7 +14,7 @@ class Shot(CircleShape):
         self.position: pygame.Vector2
 
         if Shot.image is None:
-            original_image = pygame.image.load(os.path.join("assets/images", "shot.png")).convert_alpha()
+            original_image = pygame.image.load(SHOT_IMAGE_PATH).convert_alpha()
             size = int(SHOT_RADIUS * 2)
             Shot.image = pygame.transform.scale(original_image, (size, size))
 
