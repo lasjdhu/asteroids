@@ -1,6 +1,6 @@
 import pygame
 
-from constants import (
+from src.constants import (
     FONT_PATH,
     GAME_OVER_APPEAR_DURATION,
     GAME_OVER_BAND_COLOR,

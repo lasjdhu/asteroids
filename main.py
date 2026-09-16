@@ -1,15 +1,17 @@
 import pygame
 
-from asteroid import Asteroid
-from asteroidfield import AsteroidField
-from background import Background
-from circleshape import CircleShape
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from gameoveroverlay import GameOverOverlay
-from logger import log_event, log_state
-from player import Player
-from shot import Shot
-from startscreen import StartScreen
+from src.asteroid import Asteroid
+from src.asteroid_debris import AsteroidDebris
+from src.asteroidfield import AsteroidField
+from src.background import Background
+from src.circleshape import CircleShape
+from src.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.gameoveroverlay import GameOverOverlay
+from src.logger import log_event, log_state
+from src.player import Player
+from src.scoredisplay import ScoreDisplay
+from src.shot import Shot
+from src.startscreen import StartScreen
 
 
 def main() -> None:
@@ -20,6 +22,7 @@ def main() -> None:
     background = Background(SCREEN_WIDTH, SCREEN_HEIGHT)
     start_screen = StartScreen()
     game_over_overlay = GameOverOverlay()
+    score_display = ScoreDisplay()
 
     updatable: pygame.sprite.Group[CircleShape] = pygame.sprite.Group()
     drawable: pygame.sprite.Group[CircleShape] = pygame.sprite.Group()
@@ -28,6 +31,7 @@ def main() -> None:
 
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidDebris.containers = (updatable, drawable)
     AsteroidField.containers = updatable
     Shot.containers = (shots, updatable, drawable)
 
@@ -46,6 +50,7 @@ def main() -> None:
         clear_game()
         player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         AsteroidField()
+        score_display.reset()
         state = "playing"
         log_event("game_started")
 
@@ -79,11 +84,14 @@ def main() -> None:
                         if asteroid.collides_with(shot):
                             log_event("asteroid_shot")
                             shot.kill()
+                            score_display.add_destroyed_asteroid(asteroid.radius)
                             asteroid.split()
+                            break
 
         if state in ("playing", "game_over"):
             for sprite in drawable:
                 sprite.draw(screen)
+            score_display.draw(screen)
 
         if state == "menu":
             start_screen.update(dt)

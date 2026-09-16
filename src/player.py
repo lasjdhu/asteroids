@@ -2,9 +2,9 @@ from typing import override
 
 import pygame
 
-from circleshape import CircleShape
-from shot import Shot
-from constants import (
+from src.circleshape import CircleShape
+from src.shot import Shot
+from src.constants import (
     PLAYER_RADIUS,
     PLAYER_SCALE,
     PLAYER_ANIMATION_SPEED,
@@ -59,13 +59,13 @@ class Player(CircleShape):
             self.animation_timer = 0.0
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
-        if pygame.K_UP in self.pressed_keys:
+        if self.pressed_keys.intersection((pygame.K_UP, pygame.K_w)):
             self.move(dt)
-        if pygame.K_LEFT in self.pressed_keys:
+        if self.pressed_keys.intersection((pygame.K_LEFT, pygame.K_a)):
             self.rotate(-dt)
-        if pygame.K_DOWN in self.pressed_keys:
+        if self.pressed_keys.intersection((pygame.K_DOWN, pygame.K_s)):
             self.move(-dt)
-        if pygame.K_RIGHT in self.pressed_keys:
+        if self.pressed_keys.intersection((pygame.K_RIGHT, pygame.K_d)):
             self.rotate(dt)
         if pygame.K_SPACE in self.pressed_keys:
             self.shoot()

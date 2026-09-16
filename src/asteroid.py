@@ -3,8 +3,9 @@ from typing import override
 
 import pygame
 
-from circleshape import CircleShape
-from constants import (
+from src.asteroid_debris import AsteroidDebris
+from src.circleshape import CircleShape
+from src.constants import (
     ASTEROID_IMAGE_PATHS,
     ASTEROID_MAX_ROTATION_SPEED,
     ASTEROID_MAX_SPLIT_ANGLE,
@@ -13,7 +14,7 @@ from constants import (
     ASTEROID_MIN_SPLIT_ANGLE,
     ASTEROID_SPLIT_SPEED_MULTIPLIER,
 )
-from logger import log_event
+from src.logger import log_event
 
 
 class Asteroid(CircleShape):
@@ -51,6 +52,7 @@ class Asteroid(CircleShape):
         self.rotation = (self.rotation + self.rotation_speed * dt) % 360
 
     def split(self) -> None:
+        AsteroidDebris.burst(self.position, self.velocity, self.image)
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
             return

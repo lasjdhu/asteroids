@@ -2,8 +2,8 @@ from typing import override
 
 import pygame
 
-from circleshape import CircleShape
-from constants import SHOT_IMAGE_PATH, SHOT_RADIUS
+from src.circleshape import CircleShape
+from src.constants import SHOT_IMAGE_PATH, SHOT_RADIUS
 
 
 class Shot(CircleShape):

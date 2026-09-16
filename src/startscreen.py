@@ -1,6 +1,6 @@
 import pygame
 
-from constants import (
+from src.constants import (
     COLOR_CONTROL_TEXT,
     COLOR_TITLE,
     COLOR_TITLE_SHADOW,
@@ -16,7 +16,7 @@ from constants import (
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
 )
-from pixelbutton import PixelButton
+from src.pixelbutton import PixelButton
 
 
 class StartScreen:
@@ -48,9 +48,9 @@ class StartScreen:
                 if button.rect.collidepoint(event.pos):
                     return "start" if index == 0 else "exit"
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key in (pygame.K_UP, pygame.K_w):
                 self.selected_button = (self.selected_button - 1) % len(self.buttons)
-            elif event.key == pygame.K_DOWN:
+            elif event.key in (pygame.K_DOWN, pygame.K_s):
                 self.selected_button = (self.selected_button + 1) % len(self.buttons)
             elif event.key in (pygame.K_RETURN, pygame.K_SPACE):
                 return "start" if self.selected_button == 0 else "exit"
@@ -69,7 +69,7 @@ class StartScreen:
             button.draw(screen, self.button_font, index == self.selected_button)
 
         controls = self.small_font.render(
-            "ARROWS TO MOVE  /  SPACE TO FIRE",
+            "ARROWS OR WASD TO MOVE  /  SPACE TO FIRE",
             False,
             COLOR_CONTROL_TEXT,
         )

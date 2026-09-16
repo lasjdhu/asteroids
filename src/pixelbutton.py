@@ -1,6 +1,6 @@
 import pygame
 
-from constants import (
+from src.constants import (
     BUTTON_SHADOW_OFFSET,
     BUTTON_SIZE,
     COLOR_BUTTON_BORDER_IDLE,
